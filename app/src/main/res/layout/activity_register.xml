@@ -65,62 +65,20 @@
                     app:layout_constraintTop_toBottomOf="@+id/app_title" />
 
                 <EditText
-                    android:id="@+id/login_email_input"
+                    android:id="@+id/full_name_input"
                     android:layout_width="320dp"
                     android:layout_height="52dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="48dp"
-                    android:background="@drawable/edit_text_rounded"
-                    android:ems="10"
-                    android:hint="Full Name"
-                    android:inputType="textPersonName"
-                    android:padding="10dp"
-                    android:visibility="invisible"
-                    app:layout_constraintEnd_toEndOf="@+id/app_title"
-                    app:layout_constraintHorizontal_bias="0.494"
-                    app:layout_constraintStart_toStartOf="@+id/app_title"
-                    app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-                <EditText
-                    android:id="@+id/email_input"
-                    android:layout_width="320dp"
-                    android:layout_height="52dp"
                     android:layout_marginTop="32dp"
                     android:background="@drawable/edit_text_rounded"
                     android:ems="10"
                     android:hint="Email-ID"
                     android:inputType="textEmailAddress"
                     android:padding="10dp"
-                    app:layout_constraintStart_toStartOf="@+id/login_email_input"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-                <EditText
-                    android:id="@+id/phone_input"
-                    android:layout_width="320dp"
-                    android:layout_height="52dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/edit_text_rounded"
-                    android:ems="10"
-                    android:hint="Contact Number"
-                    android:inputType="phone"
-                    android:padding="10dp"
-                    android:visibility="invisible"
-                    app:layout_constraintStart_toStartOf="@+id/email_input"
-                    app:layout_constraintTop_toBottomOf="@+id/email_input" />
-
-                <EditText
-                    android:id="@+id/dob_input"
-                    android:layout_width="320dp"
-                    android:layout_height="52dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/edit_text_rounded"
-                    android:ems="10"
-                    android:hint="DOB eg: YYYY-MM-DD"
-                    android:inputType="date"
-                    android:padding="10dp"
-                    android:visibility="invisible"
-                    app:layout_constraintStart_toStartOf="@+id/phone_input"
-                    app:layout_constraintTop_toBottomOf="@+id/phone_input" />
 
                 <EditText
                     android:id="@+id/login_password_input"
@@ -132,8 +90,8 @@
                     android:hint="Password"
                     android:inputType="textPassword"
                     android:padding="10dp"
-                    app:layout_constraintStart_toStartOf="@+id/email_input"
-                    app:layout_constraintTop_toBottomOf="@+id/email_input" />
+                    app:layout_constraintStart_toStartOf="@+id/full_name_input"
+                    app:layout_constraintTop_toBottomOf="@+id/full_name_input" />
 
                 <EditText
                     android:id="@+id/confirm_password_input"
@@ -157,7 +115,7 @@
                     android:layout_marginBottom="32dp"
                     android:background="@drawable/button_rounded"
                     android:padding="5dp"
-                    android:text="Proceed"
+                    android:text="submit"
                     android:textColor="@android:color/black"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"

@@ -107,4 +107,13 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null){
+            Intent callHomeAct = new Intent(getBaseContext(),HomeActivity.class);
+            startActivity(callHomeAct);
+        }
+    }
 }

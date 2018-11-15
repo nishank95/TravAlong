@@ -1,5 +1,6 @@
 package com.example.dell.travalong;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,17 +21,16 @@ public class RegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private EditText editTextEmail,editTextPassword,editTextConfirmPassword;
-    private Button signUpBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         mAuth = FirebaseAuth.getInstance();
-        editTextEmail = (EditText) findViewById(R.id.email_input);
+        editTextEmail = (EditText) findViewById(R.id.full_name_input);
         editTextPassword = (EditText) findViewById(R.id.login_password_input);
         editTextConfirmPassword = (EditText) findViewById(R.id.confirm_password_input);
-        signUpBtn = (Button) findViewById(R.id.signup_btn);
+        Button signUpBtn = (Button) findViewById(R.id.signup_btn);
 
         signUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,6 +52,8 @@ public class RegisterActivity extends AppCompatActivity {
                                         FirebaseUser user = mAuth.getCurrentUser();
                                         Toast.makeText(RegisterActivity.this, "User Created!",
                                                 Toast.LENGTH_SHORT).show();
+                                        Intent callHomeAct = new Intent(getBaseContext(),HomeActivity.class);
+                                        startActivity(callHomeAct);
                                     }
                                     else {
                                         // If sign in fails, display a message to the user.
