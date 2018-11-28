@@ -54,14 +54,14 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/user_level_label"
+            android:id="@+id/user_likes_label"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="10dp"
             android:ellipsize="end"
             android:padding="5dp"
-            android:text="@string/widget_level_label"
+            android:text="@string/widget_likes_label"
             android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="14sp" />
@@ -103,14 +103,14 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/widget_user_level_value"
+            android:id="@+id/widget_user_likes_value"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="10dp"
             android:ellipsize="end"
             android:padding="5dp"
-            android:text="@string/widget_user_level"
+            android:text="@string/widget_user_likes"
             android:textAlignment="center"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="16sp"
@@ -137,7 +137,6 @@
         android:id="@+id/show_user_profile"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_gravity="center"
         android:layout_margin="10dp"
         android:background="@drawable/button_rounded_border_blue"

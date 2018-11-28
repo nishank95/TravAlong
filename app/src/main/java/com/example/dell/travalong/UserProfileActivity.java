@@ -48,6 +48,7 @@ public class UserProfileActivity extends AppCompatActivity {
     @BindView(R.id.user_name) TextView profileUserName;
     @BindView(R.id.user_status) TextView profileStatus;
     @BindView(R.id.posts_value) TextView profileNoOfPost;
+    @BindView(R.id.likes_value) TextView profileNoOfLikes;
     @BindView(R.id.followers_value) TextView profileNoOfFollowers;
     @BindView(R.id.follow_btn) Button profileFollowBtn;
     @BindView(R.id.profile_user_photo) CircleImageView profileImage;
@@ -387,23 +388,27 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private void setLikesCount() {
 
-        Query likesQuery = mLikesRef.startAt(currentUserId).endAt(currentUserId + "\uf8ff");
-
         mLikesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
                     if (snap.hasChildren())
                     {
-                        Log.e(snap.getKey(),snap.getChildrenCount() + "");
-                        likesCount = (int) dataSnapshot.getChildrenCount();
-                        Log.d("Likes", Integer.toString(likesCount));
+                        String str =snap.getKey();
+                        if (str != null && str.contains(currentUserId))
+                        {
+                            Log.e(snap.getKey(), snap.getChildrenCount() + "");
+                            likesCount += snap.getChildrenCount();
+                        }
                     }
                     else
                         {
                         Log.d("Likes", "0 Likes");
-                    }
+                        }
                 }
+                profileNoOfLikes.setText(Integer.toString(likesCount));
+                setLikesCountVariable(likesCount);
             }
 
             @Override
@@ -511,5 +516,12 @@ public class UserProfileActivity extends AppCompatActivity {
         editor.apply();
 
 
+    }
+
+    public void setLikesCountVariable(int likesCount) {
+        this.likesCount = likesCount;
+        editor.putString("USER_PROFILE_LIKES_COUNT",Integer.toString(likesCount));
+        Log.d("Check", String.valueOf(likesCount));
+        editor.apply();
     }
 }

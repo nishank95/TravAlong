@@ -79,4 +79,8 @@
     <string name="widget_user_level">0</string>
     <string name="widget_posts_value">0</string>
     <string name="view_activity_btn">VIEW ACTIVITY</string>
+    <string name="widget_likes_label">Likes</string>
+    <string name="widget_user_likes">0</string>
+    <string name="likes_label">Likes</string>
+    <string name="likes_value">0</string>
 </resources>

@@ -64,11 +64,14 @@ public class UserProfileWidgetProvider extends AppWidgetProvider {
         String widgetProfileImage = sharedPreferences.getString("USER_PROFILE_IMAGE","");
         String widgetFollowerCount = sharedPreferences.getString("USER_PROFILE_FOLLOWERS_COUNT","");
         String widgetPostsCount = sharedPreferences.getString("USER_PROFILE_POST_COUNT","");
+        String widgetLikesCount = sharedPreferences.getString("USER_PROFILE_LIKES_COUNT","");
 
         views.setTextViewText(R.id.widget_user_name, widgetUserName);
         Picasso.get().load(widgetProfileImage).into(views,R.id.widget_user_profile_backpath,new int[] {});
         views.setTextViewText(R.id.widget_user_followers_value, widgetFollowerCount);
         views.setTextViewText(R.id.widget_user_posts_value, widgetPostsCount);
+        views.setTextViewText(R.id.widget_user_likes_value, widgetLikesCount);
+
 
         AppWidgetManager.getInstance(context).updateAppWidget(
                 new ComponentName(context, UserProfileWidgetProvider.class), views);
