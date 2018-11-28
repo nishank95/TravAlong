@@ -7,9 +7,9 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_popular_places"
-        android:icon="@drawable/ic_whatshot_black_24dp"
-        android:title="@string/title_popular_places" />
+        android:id="@+id/navigation_followers"
+        android:icon="@drawable/ic_group_add_black_24dp"
+        android:title="@string/title_followers" />
 
     <item
         android:id="@+id/navigation_profile"

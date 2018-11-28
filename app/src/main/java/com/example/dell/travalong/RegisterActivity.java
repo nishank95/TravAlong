@@ -11,26 +11,31 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class RegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    private EditText editTextEmail,editTextPassword,editTextConfirmPassword;
+    @BindView(R.id.full_name_input)EditText editTextEmail;
+    @BindView(R.id.login_password_input)EditText editTextPassword;
+    @BindView(R.id.confirm_password_input)EditText editTextConfirmPassword;
+    @BindView(R.id.signup_btn) Button signUpBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        ButterKnife.bind(this);
+
         mAuth = FirebaseAuth.getInstance();
-        editTextEmail = (EditText) findViewById(R.id.full_name_input);
-        editTextPassword = (EditText) findViewById(R.id.login_password_input);
-        editTextConfirmPassword = (EditText) findViewById(R.id.confirm_password_input);
-        Button signUpBtn = (Button) findViewById(R.id.signup_btn);
 
         signUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,8 +57,8 @@ public class RegisterActivity extends AppCompatActivity {
                                         FirebaseUser user = mAuth.getCurrentUser();
                                         Toast.makeText(RegisterActivity.this, "User Created!",
                                                 Toast.LENGTH_SHORT).show();
-                                        Intent callHomeAct = new Intent(getBaseContext(),HomeActivity.class);
-                                        startActivity(callHomeAct);
+                                        Intent callUpdateProfileAct = new Intent(getBaseContext(),UpdateProfileActivity.class);
+                                        startActivity(callUpdateProfileAct);
                                     }
                                     else {
                                         // If sign in fails, display a message to the user.

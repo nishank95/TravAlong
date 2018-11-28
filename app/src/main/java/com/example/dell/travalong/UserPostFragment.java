@@ -1,6 +1,7 @@
 package com.example.dell.travalong;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -38,26 +39,29 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Objects;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 
 public class UserPostFragment extends Fragment {
 
-    private String username = "";
-    private String userProfilePhoto;
-    private EditText editTextPostDescription;
-    private CircleImageView profilePhoto;
-    private Button postBtn, uploadPhotoBtn;
+    @BindView(R.id.user_create_post) EditText editTextPostDescription;
+    @BindView(R.id.profile_photo) CircleImageView profilePhoto;
+    @BindView(R.id.post_btn) Button postBtn;
+    @BindView(R.id.upload_photo_btn) Button uploadPhotoBtn;
+
     private static final int Gallery_Pick = 1;
     private Uri ImageUri;
-    private String Description;
+
     private ProgressDialog loadingBar;
 
     private StorageReference mPostsImageStorageRef;
     private DatabaseReference mUserRef, mPostRef;
     private FirebaseAuth mAuth;
-    private String saveCurrentDate, saveCurrentTime, postRandomName, downloadUrl, currentUserId;
+    private String saveCurrentDate, saveCurrentTime, postRandomName, downloadUrl, currentUserId,username,userProfilePhoto,description;
+
 
 
     public UserPostFragment() {
@@ -69,10 +73,8 @@ public class UserPostFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.activity_home_create_post, container, false);
-        editTextPostDescription = (EditText) rootView.findViewById(R.id.user_create_post);
-        profilePhoto = (CircleImageView) rootView.findViewById(R.id.profile_photo);
-        postBtn = (Button) rootView.findViewById(R.id.post_btn);
-        uploadPhotoBtn = (Button) rootView.findViewById(R.id.upload_photo_btn);
+        ButterKnife.bind(this,rootView);
+
         loadingBar = new ProgressDialog(rootView.getContext());
 
         mAuth = FirebaseAuth.getInstance();
@@ -84,30 +86,20 @@ public class UserPostFragment extends Fragment {
         editTextPostDescription.setHint("Hi ," + username + "! How are you feeling today!");
         Picasso.get().load(userProfilePhoto).placeholder(R.drawable.male_profile).into(profilePhoto);
 
-        uploadPhotoBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                OpenGallery();
-            }
-        });
+        uploadPhotoBtn.setOnClickListener(v -> OpenGallery());
 
 
-        postBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ValidatePostInfo();
-            }
-        });
+        postBtn.setOnClickListener(v -> ValidatePostInfo());
 
         return rootView;
     }
 
     private void ValidatePostInfo() {
-        Description = editTextPostDescription.getText().toString();
+        description = editTextPostDescription.getText().toString();
 
         if (ImageUri == null) {
             Toast.makeText(getContext(), "Please select post image...", Toast.LENGTH_SHORT).show();
-        } else if (TextUtils.isEmpty(Description)) {
+        } else if (TextUtils.isEmpty(description)) {
             Toast.makeText(getContext(), "Please say something about your image...", Toast.LENGTH_SHORT).show();
         } else {
             loadingBar.setTitle("Add New Post");
@@ -135,71 +127,69 @@ public class UserPostFragment extends Fragment {
 
 
         filePath.putFile(ImageUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(getContext(), "Uploaded", Toast.LENGTH_SHORT).show();
-                        filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                downloadUrl = uri.toString();
+                .addOnSuccessListener(taskSnapshot -> {
+                    Toast.makeText(getContext(), "Uploaded", Toast.LENGTH_SHORT).show();
+                    filePath.getDownloadUrl().addOnSuccessListener(uri -> {
+                        downloadUrl = uri.toString();
 
-                                Log.d("TAG", downloadUrl);
-                                SavingPostInformationToDatabase();
-                            }
-                        });
+                        Log.d("TAG", downloadUrl);
+                        SavingPostInformationToDatabase();
+                    });
 
-                    }
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        loadingBar.dismiss();
-                        Toast.makeText(getContext(), "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+                .addOnFailureListener(e -> {
+                    loadingBar.dismiss();
+                    Toast.makeText(getContext(), "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 })
-                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
-                                .getTotalByteCount());
-                        loadingBar.setMessage("Uploaded " + (int) progress + "%");
-                    }
+                .addOnProgressListener(taskSnapshot -> {
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
+                            .getTotalByteCount());
+                    loadingBar.setMessage("Uploaded " + (int) progress + "%");
                 });
     }
 
 
 
 
-    private void SavingPostInformationToDatabase() {
+    private void SavingPostInformationToDatabase()
+    {
         mUserRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
+
+                if (dataSnapshot.exists())
+                {
                     String userFullName = Objects.requireNonNull(dataSnapshot.child("full_name").getValue()).toString();
-                    String userProfileImage = Objects.requireNonNull(dataSnapshot.child("profileimage").getValue()).toString();
+                    String userProfileImage;
+
+                    if(dataSnapshot.child("profileimage").getValue() == null)
+                    {
+
+                        userProfileImage = "none";
+                    }
+                    else
+                    {
+                        userProfileImage = Objects.requireNonNull(dataSnapshot.child("profileimage").getValue()).toString();
+                    }
 
                     HashMap postsMap = new HashMap();
                     postsMap.put("uid", currentUserId);
                     postsMap.put("date", saveCurrentDate);
                     postsMap.put("time", saveCurrentTime);
-                    postsMap.put("description", Description);
+                    postsMap.put("description", description);
                     postsMap.put("postimage", downloadUrl);
                     postsMap.put("profileimage", userProfileImage);
                     postsMap.put("full_name", userFullName);
 
                     mPostRef.child(currentUserId + postRandomName).updateChildren(postsMap)
-                            .addOnCompleteListener(new OnCompleteListener() {
-                                @Override
-                                public void onComplete(@NonNull Task task) {
-                                    if (task.isSuccessful()) {
-                                        selfCallHomeActivity();
-                                        Toast.makeText(getContext(), "New Post is updated successfully.", Toast.LENGTH_SHORT).show();
-                                        loadingBar.dismiss();
-                                    } else {
-                                        Toast.makeText(getContext(), "Error Occured while updating your post.", Toast.LENGTH_SHORT).show();
-                                        loadingBar.dismiss();
-                                    }
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    selfCallHomeActivity();
+                                    Toast.makeText(getContext(), "New Post is updated successfully.", Toast.LENGTH_SHORT).show();
+                                    loadingBar.dismiss();
+                                } else {
+                                    Toast.makeText(getContext(), "Error Occured while updating your post.", Toast.LENGTH_SHORT).show();
+                                    loadingBar.dismiss();
                                 }
                             });
                 }

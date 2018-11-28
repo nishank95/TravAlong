@@ -17,57 +17,57 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText editTextEmail,editTextPassword;
-    private Button signup_btn,login_btn;
+    @BindView(R.id.login_email_input)EditText editTextEmail;
+    @BindView(R.id.login_password_input)EditText editTextPassword;
+    @BindView(R.id.signup_btn)Button signup_btn;
+    @BindView(R.id.login_btn)Button login_btn;
+
     private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        editTextEmail = (EditText) findViewById(R.id.login_email_input);
-        editTextPassword = (EditText) findViewById(R.id.login_password_input);
-        signup_btn = (Button) findViewById(R.id.signup_btn);
-        login_btn = (Button) findViewById(R.id.login_btn);
+        ButterKnife.bind(this);
 
         mAuth = FirebaseAuth.getInstance();
 
-        login_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        login_btn.setOnClickListener(view -> {
 
-                String email = editTextEmail.getText().toString();
-                String password = editTextPassword.getText().toString();
+            String email = editTextEmail.getText().toString();
+            String password = editTextPassword.getText().toString();
 
-                if(checkInput(email,password))
-                {
-                    mAuth.signInWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>()
+            if(checkInput(email,password))
+            {
+                mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>()
+                        {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task)
                             {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task)
-                                {
-                                    if (task.isSuccessful()) {
-                                        // Sign in success, update UI with the signed-in user's information
-                                        Log.d("Firebase-Auth Status", "signInWithEmail:success");
-                                        FirebaseUser user = mAuth.getCurrentUser();
-                                        if (user != null) {
-                                            Toast.makeText(LoginActivity.this, "Login Successful! Welcome, " + user.getDisplayName() ,
-                                                    Toast.LENGTH_SHORT).show();
-                                            Intent callHomeAct = new Intent(getBaseContext(),HomeActivity.class);
-                                            startActivity(callHomeAct);
-                                        }
-                                    } else {
-                                        // If sign in fails, display a message to the user.
-                                        Log.w("Firebase-Auth Status", "signInWithEmail:failure", task.getException());
-                                        Toast.makeText(LoginActivity.this, "Incorrect Email or Password!",
+                                if (task.isSuccessful()) {
+                                    // Sign in success, update UI with the signed-in user's information
+                                    Log.d("Firebase-Auth Status", "signInWithEmail:success");
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    if (user != null) {
+                                        Toast.makeText(LoginActivity.this, "Login Successful! Welcome, " + user.getDisplayName() ,
                                                 Toast.LENGTH_SHORT).show();
+                                        Intent callHomeAct = new Intent(getBaseContext(),HomeActivity.class);
+                                        startActivity(callHomeAct);
                                     }
+                                } else {
+                                    // If sign in fails, display a message to the user.
+                                    Log.w("Firebase-Auth Status", "signInWithEmail:failure", task.getException());
+                                    Toast.makeText(LoginActivity.this, "Incorrect Email or Password!",
+                                            Toast.LENGTH_SHORT).show();
                                 }
-                            });
-                }
+                            }
+                        });
             }
         });
 

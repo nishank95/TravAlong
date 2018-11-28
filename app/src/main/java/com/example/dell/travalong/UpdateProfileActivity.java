@@ -34,32 +34,33 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UpdateProfileActivity extends AppCompatActivity {
+    @BindView(R.id.full_name_input)EditText editTextFullName;
+    @BindView(R.id.username_input)EditText editTextUsername;
+    @BindView(R.id.country_input)EditText editTextCountry;
+    @BindView(R.id.phone_input)EditText editTextPhone;
+    @BindView(R.id.status_input)EditText editTextStatus;
+    @BindView(R.id.profile_photo)CircleImageView profilePhoto;
+    @BindView(R.id.proceed_btn)Button proceedBtn;
+    private Uri imageUri;
+    final static int gallery_pick_Code = 1;
     private String userID;
     private ProgressDialog progressDialog;
-    private Uri imageUri;
+
     private FirebaseAuth mAuth;
     private DatabaseReference mUserRef;
     private StorageReference mStorageRef;
-    private EditText editTextFullName, editTextUsername, editTextCountry, editTextPhone, editTextStatus;
-    private CircleImageView profilePhoto;
-    final static int gallery_pick_Code = 1;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_profile);
-        editTextFullName = (EditText) findViewById(R.id.full_name_input);
-        editTextCountry = (EditText) findViewById(R.id.country_input);
-        editTextPhone = (EditText) findViewById(R.id.phone_input);
-        editTextUsername = (EditText) findViewById(R.id.username_input);
-        editTextStatus = (EditText) findViewById(R.id.status_input);
-        profilePhoto = (CircleImageView) findViewById(R.id.profile_photo);
-
-        Button proceedBtn = (Button) findViewById(R.id.proceed_btn);
+        ButterKnife.bind(this);
 
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {
@@ -130,7 +131,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 progressDialog.dismiss();
                                 Toast.makeText(UpdateProfileActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
-//                                final String downloadUrl = FirebaseStorage.getInstance().getReference().child("Profile_Images").child(userID).getDownloadUrl().toString();
 
                                 mStorageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override

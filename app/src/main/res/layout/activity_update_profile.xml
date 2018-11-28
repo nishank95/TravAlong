@@ -37,15 +37,15 @@ android:layout_height="match_parent">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/register_details_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="1dp"
             android:layout_marginTop="8dp"
-            android:text="Enter Your Details Below"
+            android:text="@string/register_details_label"
             android:textColor="@android:color/white"
             android:textSize="17sp"
             android:typeface="normal"
@@ -74,12 +74,12 @@ android:layout_height="match_parent">
             android:layout_marginTop="32dp"
             android:background="@drawable/edit_text_rounded"
             android:ems="10"
-            android:hint="Full Name"
+            android:hint="@string/full_name_input"
             android:inputType="textEmailAddress"
             android:padding="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintTop_toBottomOf="@+id/register_details_label" />
 
         <EditText
             android:id="@+id/username_input"
@@ -88,7 +88,7 @@ android:layout_height="match_parent">
             android:layout_marginTop="8dp"
             android:background="@drawable/edit_text_rounded"
             android:ems="10"
-            android:hint="Username"
+            android:hint="@string/username_input"
             android:inputType="textPersonName"
             android:padding="10dp"
             app:layout_constraintStart_toStartOf="@+id/full_name_input"
@@ -101,7 +101,7 @@ android:layout_height="match_parent">
             android:layout_marginTop="8dp"
             android:background="@drawable/edit_text_rounded"
             android:ems="10"
-            android:hint="Contact No."
+            android:hint="@string/contact_no_input"
             android:inputType="phone"
             android:padding="10dp"
             app:layout_constraintStart_toStartOf="@+id/username_input"
@@ -114,7 +114,7 @@ android:layout_height="match_parent">
             android:layout_marginTop="8dp"
             android:background="@drawable/edit_text_rounded"
             android:ems="10"
-            android:hint="Country"
+            android:hint="@string/country_input"
             android:inputType="text"
             android:padding="10dp"
             app:layout_constraintStart_toStartOf="@+id/phone_input"
@@ -128,7 +128,7 @@ android:layout_height="match_parent">
             android:layout_marginTop="8dp"
             android:background="@drawable/edit_text_rounded"
             android:ems="10"
-            android:hint="Status"
+            android:hint="@string/status_input"
             android:inputType="text"
             android:padding="10dp"
             app:layout_constraintStart_toStartOf="@+id/country_input"
@@ -143,7 +143,7 @@ android:layout_height="match_parent">
             android:layout_marginTop="8dp"
             android:background="@drawable/button_rounded"
             android:padding="5dp"
-            android:text="Proceed"
+            android:text="@string/proceed_btn_text"
             android:textColor="@android:color/black"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -153,5 +153,4 @@ android:layout_height="match_parent">
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
-
 </FrameLayout>

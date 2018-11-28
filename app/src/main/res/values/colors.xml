@@ -6,4 +6,5 @@
     <color name="black_overlay">#66000000</color>
     <color name="black_transparent">#a2000000</color>
     <color name="hintColor">#bebebe</color>
+    <color name="white">#FFFFFF</color>
 </resources>

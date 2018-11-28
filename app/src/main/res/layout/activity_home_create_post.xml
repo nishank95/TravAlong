@@ -2,7 +2,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -38,7 +37,7 @@
                 android:background="@drawable/edit_text_rounded"
                 android:ems="10"
                 android:gravity="top"
-                android:hint="Hi ,User ! How are you feeling today!"
+                android:hint="@string/create_post_text"
                 android:inputType="textMultiLine"
                 android:padding="5dp"
                 android:textSize="16sp"
@@ -69,7 +68,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/button_rounded_blue"
                     android:padding="2dp"
-                    android:text="post"
+                    android:text="@string/post_btn_text"
                     android:textColor="@android:color/white"
                     android:textStyle="bold" />
 
@@ -80,7 +79,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/button_rounded_border_blue"
                     android:padding="2dp"
-                    android:text="Photo"
+                    android:text="@string/upload_btn_text"
                     android:textColor="@color/colorPrimary"
                     android:textStyle="bold" />
             </LinearLayout>

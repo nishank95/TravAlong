@@ -7,6 +7,7 @@ public class Post {
     public Post() {
 
     }
+
     public Post(String date, String description ,String full_name ,String postimage , String profileimage,String time, String uid)
     {
         this.date = date;
@@ -26,7 +27,7 @@ public class Post {
         return description;
     }
 
-    public String getFullName() {
+    public String getFull_name() {
         return full_name;
     }
 
@@ -54,7 +55,7 @@ public class Post {
         this.description = description;
     }
 
-    public void setFullName(String full_name) {
+    public void setFull_name(String full_name) {
         this.full_name = full_name;
     }
 
