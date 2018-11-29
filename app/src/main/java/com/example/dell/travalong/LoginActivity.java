@@ -45,27 +45,22 @@ public class LoginActivity extends AppCompatActivity {
             if(checkInput(email,password))
             {
                 mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>()
-                        {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task)
-                            {
-                                if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    Log.d("Firebase-Auth Status", "signInWithEmail:success");
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    if (user != null) {
-                                        Toast.makeText(LoginActivity.this, "Login Successful! Welcome, " + user.getDisplayName() ,
-                                                Toast.LENGTH_SHORT).show();
-                                        Intent callHomeAct = new Intent(getBaseContext(),HomeActivity.class);
-                                        startActivity(callHomeAct);
-                                    }
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    Log.w("Firebase-Auth Status", "signInWithEmail:failure", task.getException());
-                                    Toast.makeText(LoginActivity.this, "Incorrect Email or Password!",
+                        .addOnCompleteListener(LoginActivity.this, task -> {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d("Firebase-Auth Status", "signInWithEmail:success");
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                if (user != null) {
+                                    Toast.makeText(LoginActivity.this, getString(R.string.login_welcome_message) + user.getDisplayName() ,
                                             Toast.LENGTH_SHORT).show();
+                                    Intent callHomeAct = new Intent(getBaseContext(),HomeActivity.class);
+                                    startActivity(callHomeAct);
                                 }
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w("Firebase-Auth Status", "signInWithEmail:failure", task.getException());
+                                Toast.makeText(LoginActivity.this, R.string.login_error_message,
+                                        Toast.LENGTH_SHORT).show();
                             }
                         });
             }
@@ -86,19 +81,19 @@ public class LoginActivity extends AppCompatActivity {
 
         if(email.isEmpty())
         {
-            editTextEmail.setError("Email Field Required!");
+            editTextEmail.setError(getString(R.string.email_required_message));
             editTextEmail.requestFocus();
             return false;
         }
         if(password.isEmpty())
         {
-            editTextPassword.setError("Password Required!");
+            editTextPassword.setError(getString(R.string.pass_required_message));
             editTextPassword.requestFocus();
             return false;
         }
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches())
         {
-            editTextEmail.setError("Invalid Email-ID!");
+            editTextEmail.setError(getString(R.string.email_invalid_message));
             editTextEmail.requestFocus();
             return false;
         }

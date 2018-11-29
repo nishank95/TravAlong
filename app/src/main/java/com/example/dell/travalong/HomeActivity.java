@@ -31,30 +31,26 @@ public class HomeActivity extends AppCompatActivity {
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+            = item -> {
+                switch (item.getItemId()) {
+                    case R.id.navigation_home:
+                        Intent callHomeAct = new Intent(HomeActivity.this, HomeActivity.class);
+                        startActivity(callHomeAct);
+                        return true;
 
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    Intent callHomeAct = new Intent(HomeActivity.this, HomeActivity.class);
-                    startActivity(callHomeAct);
-                    return true;
+                    case R.id.navigation_followers:
+                        Intent intent = new Intent(HomeActivity.this,FollowersActivity.class);
+                        startActivity(intent);
+                        return true;
 
-                case R.id.navigation_followers:
-                    Intent intent = new Intent(HomeActivity.this,FollowersActivity.class);
-                    startActivity(intent);
-                    return true;
+                    case R.id.navigation_profile:
+                        Intent callProfileAct = new Intent(HomeActivity.this,UserProfileActivity.class);
+                        startActivity(callProfileAct);
 
-                case R.id.navigation_profile:
-                    Intent callProfileAct = new Intent(HomeActivity.this,UserProfileActivity.class);
-                    startActivity(callProfileAct);
-
-                    return true;
-            }
-            return false;
-        }
-    };
+                        return true;
+                }
+                return false;
+            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,15 +66,15 @@ public class HomeActivity extends AppCompatActivity {
             {
                 if(dataSnapshot.exists())
                 {
-                    if(dataSnapshot.hasChild("username"))
+                    if(dataSnapshot.hasChild(getString(R.string.label_username)))
                     {
                         username = dataSnapshot.child("username").getValue(String.class);
-                        Log.d("HomeAct",username);
+
                     }
-                    if(dataSnapshot.hasChild("profileimage"))
+                    if(dataSnapshot.hasChild(getString(R.string.label_profile_image)))
                         {
                         image = dataSnapshot.child("profileimage").getValue(String.class);
-                        Log.d("HomeAct",image);
+
                     }
 
                     loadFragments(username,image);
@@ -93,7 +89,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 

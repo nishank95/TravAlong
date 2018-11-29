@@ -53,8 +53,8 @@ public class FeedListFragment extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
         currentUserID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-        mPostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
-        mLikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
+        mPostsRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.child_posts));
+        mLikesRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.child_likes));
 
         postList = rootView.findViewById(R.id.users_post_list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(rootView.getContext());
@@ -81,7 +81,6 @@ public class FeedListFragment extends Fragment {
 
                         if (model.getFull_name() != null)
                         {
-                            Log.d("Username", model.getFull_name());
                             viewHolder.setFull_name(model.getFull_name());
                         }
                         viewHolder.setTime(model.getTime());
@@ -157,22 +156,21 @@ public class FeedListFragment extends Fragment {
             mView = itemView;
             ButterKnife.bind(this,mView);
 
-            likesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
+            likesRef = FirebaseDatabase.getInstance().getReference().child(mView.getContext().getString(R.string.get_likes));
             currentUserId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
         }
 
         public void setFull_name(String full_name) {
-            TextView username = (TextView) mView.findViewById(R.id.post_user_name);
+            TextView username = mView.findViewById(R.id.post_user_name);
             if (username != null) {
-                Log.d("Username", full_name);
                 username.setText(full_name);
             }
         }
 
 
         public void setProfileImage(String profileimage) {
-            CircleImageView profilePhoto = (CircleImageView) mView.findViewById(R.id.profile_photo);
+            CircleImageView profilePhoto = mView.findViewById(R.id.profile_photo);
             if(profileimage.equals("none"))
             {
                 Picasso.get().load(R.drawable.male_profile).into(profilePhoto);
@@ -184,22 +182,22 @@ public class FeedListFragment extends Fragment {
         }
 
         public void setTime(String time) {
-            TextView postTime = (TextView) mView.findViewById(R.id.post_time);
+            TextView postTime = mView.findViewById(R.id.post_time);
             postTime.setText(time);
         }
 
         public void setDate(String date) {
-            TextView postDate = (TextView) mView.findViewById(R.id.post_date);
+            TextView postDate = mView.findViewById(R.id.post_date);
             postDate.setText(date);
         }
 
         public void setDescription(String description) {
-            TextView postDescription = (TextView) mView.findViewById(R.id.post_description);
+            TextView postDescription = mView.findViewById(R.id.post_description);
             postDescription.setText(description);
         }
 
         public void setPostImage(String postimage) {
-            ImageView postImage = (ImageView) mView.findViewById(R.id.post_display_image);
+            ImageView postImage = mView.findViewById(R.id.post_display_image);
             Picasso.get().load(postimage).into(postImage);
         }
 
@@ -211,14 +209,14 @@ public class FeedListFragment extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.child(postKey).hasChild(currentUserId)) {
                         likesCount = (int) dataSnapshot.child(postKey).getChildrenCount();
-                        postNoOfLikes.setText(Integer.toString(likesCount) + " Likes");
-                        postLikeBtn.setText("Liked!");
+                        postNoOfLikes.setText(Integer.toString(likesCount) + mView.getContext().getString(R.string.label_likes));
+                        postLikeBtn.setText(R.string.value_liked);
                     }
                     else
                     {
                         likesCount = (int) dataSnapshot.child(postKey).getChildrenCount();
-                        postNoOfLikes.setText(Integer.toString(likesCount) + " Likes");
-                        postLikeBtn.setText("Like");
+                        postNoOfLikes.setText(Integer.toString(likesCount) + mView.getContext().getString(R.string.label_likes));
+                        postLikeBtn.setText(R.string.value_like);
                     }
                 }
 

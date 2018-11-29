@@ -66,23 +66,20 @@ public class UpdateProfileActivity extends AppCompatActivity {
         if (mAuth.getCurrentUser() != null) {
             userID = mAuth.getCurrentUser().getUid();
         }
-        mUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(userID);
-        mStorageRef = FirebaseStorage.getInstance().getReference().child("Profile_Images").child(userID);
+        mUserRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.child_users)).child(userID);
+        mStorageRef = FirebaseStorage.getInstance().getReference().child(getString(R.string.child_profile_image)).child(userID);
 
-        proceedBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        proceedBtn.setOnClickListener(view -> {
 
-                if(saveAccountInformation())
-                {
-                    uploadImage();
-                }
-                else
-                {
-                    Toast.makeText(UpdateProfileActivity.this, "Enter Details Correctly to Proceed!", Toast.LENGTH_SHORT).show();
-                }
-
+            if(saveAccountInformation())
+            {
+                uploadImage();
             }
+            else
+            {
+                Toast.makeText(UpdateProfileActivity.this, R.string.details_correct_message, Toast.LENGTH_SHORT).show();
+            }
+
         });
 
         profilePhoto.setOnClickListener(new View.OnClickListener() {
@@ -98,14 +95,14 @@ public class UpdateProfileActivity extends AppCompatActivity {
         mUserRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChild("profileimage"))
+                if(dataSnapshot.hasChild(getString(R.string.child_profile_image)))
                 {
-                    String image = dataSnapshot.child("profileimage").getValue().toString();
+                    String image = dataSnapshot.child(getString(R.string.child_profile_image)).getValue().toString();
                     Picasso.get().load(image).placeholder(R.drawable.male_profile).into(profilePhoto);
                 }
                 else
                 {
-                    Toast.makeText(UpdateProfileActivity.this, "Please select profile image first.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UpdateProfileActivity.this, R.string.select_profile_image_message, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -122,7 +119,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
             if(imageUri != null)
             {
                 progressDialog = new ProgressDialog(UpdateProfileActivity.this);
-                progressDialog.setTitle("Uploading...");
+                progressDialog.setTitle(getString(R.string.uploading_message));
                 progressDialog.show();
 
                 mStorageRef.putFile(imageUri)
@@ -130,7 +127,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 progressDialog.dismiss();
-                                Toast.makeText(UpdateProfileActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(UpdateProfileActivity.this, R.string.uploaded_message, Toast.LENGTH_SHORT).show();
 
                                 mStorageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
@@ -138,7 +135,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
                                         String downloadUrl = uri.toString();
                                         Log.d("TAG", downloadUrl);
 
-                                        mUserRef.child("profileimage").setValue(downloadUrl)
+                                        mUserRef.child(getString(R.string.child_profile_image)).setValue(downloadUrl)
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task)
@@ -147,12 +144,12 @@ public class UpdateProfileActivity extends AppCompatActivity {
                                                             Intent selfIntent = new Intent(UpdateProfileActivity.this, UpdateProfileActivity.class);
                                                             startActivity(selfIntent);
 
-                                                            Toast.makeText(UpdateProfileActivity.this, "Profile Image stored to Firebase Database Successfully...", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(UpdateProfileActivity.this, R.string.image_stored_success_message, Toast.LENGTH_SHORT).show();
                                                         }
                                                         else
                                                         {
                                                             String message = task.getException().getMessage();
-                                                            Toast.makeText(UpdateProfileActivity.this, "Error Occured: " + message, Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(UpdateProfileActivity.this, getString(R.string.image_store_error) + message, Toast.LENGTH_SHORT).show();
 
                                                         }
                                                     }
@@ -208,14 +205,14 @@ public class UpdateProfileActivity extends AppCompatActivity {
         if (checkInput(name, country, phone, username)) {
 
             HashMap userData = new HashMap();
-            userData.put("username", username);
-            userData.put("full_name", name);
-            userData.put("country", country);
-            userData.put("phone", phone);
-            userData.put("status", status);
-            userData.put("dob", "none");
-            userData.put("gender", "none");
-            userData.put("relationship_status", "none");
+            userData.put(getString(R.string.key_username), username);
+            userData.put(getString(R.string.key_full_name), name);
+            userData.put(getString(R.string.key_country), country);
+            userData.put(getString(R.string.key_phone), phone);
+            userData.put(getString(R.string.key_status), status);
+            userData.put(getString(R.string.key_dob), "none");
+            userData.put(getString(R.string.key_gender), "none");
+            userData.put(getString(R.string.key_relationship_stas), "none");
 
             mUserRef.updateChildren(userData).addOnCompleteListener(new OnCompleteListener() {
 
@@ -223,11 +220,11 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task task) {
                     if (task.isSuccessful()) {
                         callHomeActivity();
-                        Toast.makeText(UpdateProfileActivity.this, "Your Details are Registered Successfully.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(UpdateProfileActivity.this, R.string.details_stored_success_message, Toast.LENGTH_LONG).show();
 
                     } else {
                         String message = Objects.requireNonNull(task.getException()).getMessage();
-                        Toast.makeText(UpdateProfileActivity.this, "Error Occured: " + message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UpdateProfileActivity.this, getString(R.string.details_store_error_message) + message, Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -259,22 +256,22 @@ public class UpdateProfileActivity extends AppCompatActivity {
     private boolean checkInput(String name, String country, String phone, String username) {
 
         if (name.isEmpty()) {
-            editTextFullName.setError("Name Field Required!");
+            editTextFullName.setError(getString(R.string.name_required_message));
             editTextFullName.requestFocus();
             return false;
         }
         if (country.isEmpty()) {
-            editTextCountry.setError("Country Required!");
+            editTextCountry.setError(getString(R.string.country_required_message));
             editTextCountry.requestFocus();
             return false;
         }
         if (phone.isEmpty()) {
-            editTextPhone.setError("Phone Number Required!");
+            editTextPhone.setError(getString(R.string.phn_required_message));
             editTextPhone.requestFocus();
             return false;
         }
         if (username.isEmpty()) {
-            editTextUsername.setError("Username Required!");
+            editTextUsername.setError(getString(R.string.username_required_message));
             editTextUsername.requestFocus();
             return false;
         }

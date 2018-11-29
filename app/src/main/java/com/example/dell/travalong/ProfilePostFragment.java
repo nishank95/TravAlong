@@ -54,7 +54,7 @@ public class ProfilePostFragment extends Fragment{
 
 
         mAuth = FirebaseAuth.getInstance();
-        mPostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
+        mPostsRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.child_posts));
 
         mPostsRef.keepSynced(true);
         DisplayUserPosts();
@@ -95,6 +95,7 @@ public class ProfilePostFragment extends Fragment{
         Intent callPostDetailAct = new Intent(getContext(),PostDetailActivity.class);
         callPostDetailAct.putExtra("key",postKey);
         startActivity(callPostDetailAct);
+        Objects.requireNonNull(getActivity()).overridePendingTransition(R.anim.go_up,R.anim.go_down);
 
     }
 

@@ -37,40 +37,34 @@ public class RegisterActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        signUpBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String email = editTextEmail.getText().toString();
-                String password = editTextPassword.getText().toString();
-                String confirmPassword = editTextConfirmPassword.getText().toString();
+        signUpBtn.setOnClickListener(view -> {
+            String email = editTextEmail.getText().toString();
+            String password = editTextPassword.getText().toString();
+            String confirmPassword = editTextConfirmPassword.getText().toString();
 
-                //validates Input Email and Password
-                if (checkInput(email, password, confirmPassword))
-                {
-                    mAuth.createUserWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        // Sign in success, update UI with the signed-in user's information
-                                        Log.d("Firebase-Auth Status", "createUserWithEmail:success");
-                                        FirebaseUser user = mAuth.getCurrentUser();
-                                        Toast.makeText(RegisterActivity.this, "User Created!",
-                                                Toast.LENGTH_SHORT).show();
-                                        Intent callUpdateProfileAct = new Intent(getBaseContext(),UpdateProfileActivity.class);
-                                        startActivity(callUpdateProfileAct);
-                                    }
-                                    else {
-                                        // If sign in fails, display a message to the user.
-                                        Log.d("Firebase-Auth Status", "createUserWithEmail:failure", task.getException());
-                                        Toast.makeText(RegisterActivity.this, "Authentication failed.",
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                }
+            //validates Input Email and Password
+            if (checkInput(email, password, confirmPassword))
+            {
+                mAuth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(RegisterActivity.this, task -> {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d("Firebase-Auth Status", "createUserWithEmail:success");
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                Toast.makeText(RegisterActivity.this, R.string.user_create_message,
+                                        Toast.LENGTH_SHORT).show();
+                                Intent callUpdateProfileAct = new Intent(getBaseContext(),UpdateProfileActivity.class);
+                                startActivity(callUpdateProfileAct);
+                            }
+                            else {
+                                // If sign in fails, display a message to the user.
+                                Log.d("Firebase-Auth Status", "createUserWithEmail:failure", task.getException());
+                                Toast.makeText(RegisterActivity.this, R.string.auth_fail_message,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
-            });
+        });
 
     }
 
@@ -78,32 +72,32 @@ public class RegisterActivity extends AppCompatActivity {
 
         if(email.isEmpty())
         {
-            editTextEmail.setError("Email Field Required!");
+            editTextEmail.setError(getString(R.string.email_required_message));
             editTextEmail.requestFocus();
             return false;
         }
         if(password.isEmpty())
         {
-            editTextPassword.setError("Password Required!");
+            editTextPassword.setError(getString(R.string.pass_required_message));
             editTextPassword.requestFocus();
             return false;
         }
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches())
         {
-            editTextEmail.setError("Invalid Email-ID!");
+            editTextEmail.setError(getString(R.string.email_invalid_message));
             editTextEmail.requestFocus();
             return false;
         }
         if(!password.equals(confirmPassword)){
-            editTextConfirmPassword.setError("Passwords doesn't match");
-            editTextPassword.setError("Passwords doesn't match");
+            editTextConfirmPassword.setError(getString(R.string.pass_match_error));
+            editTextPassword.setError(getString(R.string.pass_match_error));
             editTextPassword.requestFocus();
             editTextConfirmPassword.requestFocus();
             return false;
         }
         if(password.length() < 8)
         {
-            editTextPassword.setError("Passwords Length should be atleast 8 characters!");
+            editTextPassword.setError(getString(R.string.pass_length_message));
             editTextPassword.requestFocus();
             return false;
         }

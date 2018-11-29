@@ -88,9 +88,9 @@ public class FollowersActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         currentUserID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-        allUsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        mFollowReqRef = FirebaseDatabase.getInstance().getReference().child("Follow-Requests");
-        mFollowsRef = FirebaseDatabase.getInstance().getReference().child("Followers");
+        allUsersRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.child_users));
+        mFollowReqRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.child_follow_req));
+        mFollowsRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.child_followers));
 
 
         allUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -100,7 +100,7 @@ public class FollowersActivity extends AppCompatActivity {
                     noOfUsers = (int) dataSnapshot.getChildrenCount();
                     String[] arr = new String[noOfUsers];
                     CURRENT_STATE = new ArrayList<String>(Arrays.asList(arr));
-                    Collections.fill(CURRENT_STATE, "not_friends");
+                    Collections.fill(CURRENT_STATE, getString(R.string.label_not_friends));
                 }
             }
 
@@ -113,12 +113,9 @@ public class FollowersActivity extends AppCompatActivity {
         searchUserAndFriends("");
 
 
-        findFollowersBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String searchInboxInput = searchFollowerEditText.getText().toString();
-                searchUserAndFriends(searchInboxInput);
-            }
+        findFollowersBtn.setOnClickListener(view -> {
+            String searchInboxInput = searchFollowerEditText.getText().toString();
+            searchUserAndFriends(searchInboxInput);
         });
 
 
@@ -165,7 +162,7 @@ public class FollowersActivity extends AppCompatActivity {
         }
         else
         {
-            searchPeopleQuery = allUsersRef.orderByChild("full_name")
+            searchPeopleQuery = allUsersRef.orderByChild(getString(R.string.label_full_name))
                     .startAt(searchInboxInput).endAt(searchInboxInput + "\uf8ff");
         }
 
@@ -185,14 +182,11 @@ public class FollowersActivity extends AppCompatActivity {
                 viewHolder.setProfileImage(model.getProfileImage());
                 viewHolder.setStatus(model.getStatus());
 
-                maintainRequestBtnSession(getRef(position).getKey(),position,(Button) viewHolder.mView.findViewById(R.id.activity_followers_btn));
+                maintainRequestBtnSession(getRef(position).getKey(),position, viewHolder.mView.findViewById(R.id.activity_followers_btn));
 
-                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String receiverId = getRef(position).getKey();
-                        callProfileActivity(receiverId);
-                    }
+                viewHolder.mView.setOnClickListener(view -> {
+                    String receiverId = getRef(position).getKey();
+                    callProfileActivity(receiverId);
                 });
 
 
@@ -215,7 +209,7 @@ public class FollowersActivity extends AppCompatActivity {
 
                 if (dataSnapshot.hasChild(receiverID)) {
                     followBtn.setVisibility(View.VISIBLE);
-                    followBtn.setText("FOLLOWED");
+                    followBtn.setText(R.string.label_followed);
                     followBtn.setBackgroundResource(R.drawable.button_rounded_border_blue);
                     followBtn.setTextColor(getColor(R.color.colorPrimaryDark));
                 } else {
@@ -273,6 +267,6 @@ public class FollowersActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putStringArrayList("list",CURRENT_STATE);
+        outState.putStringArrayList(getString(R.string.label_list),CURRENT_STATE);
     }
 }

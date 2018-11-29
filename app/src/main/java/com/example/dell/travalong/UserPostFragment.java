@@ -81,8 +81,8 @@ public class UserPostFragment extends Fragment {
         currentUserId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 
         mPostsImageStorageRef = FirebaseStorage.getInstance().getReference();
-        mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        mPostRef = FirebaseDatabase.getInstance().getReference().child("Posts");
+        mUserRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.child_users));
+        mPostRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.child_posts));
         editTextPostDescription.setHint("Hi ," + username + "! How are you feeling today!");
         Picasso.get().load(userProfilePhoto).placeholder(R.drawable.male_profile).into(profilePhoto);
 
@@ -98,12 +98,12 @@ public class UserPostFragment extends Fragment {
         description = editTextPostDescription.getText().toString();
 
         if (ImageUri == null) {
-            Toast.makeText(getContext(), "Please select post image...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.select_post_image_message, Toast.LENGTH_SHORT).show();
         } else if (TextUtils.isEmpty(description)) {
-            Toast.makeText(getContext(), "Please say something about your image...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.image_more_info_message, Toast.LENGTH_SHORT).show();
         } else {
             loadingBar.setTitle("Add New Post");
-            loadingBar.setMessage("Please wait, while we are updating your new post...");
+            loadingBar.setMessage(getString(R.string.loading_post_message));
             loadingBar.show();
             loadingBar.setCanceledOnTouchOutside(true);
 
@@ -113,22 +113,22 @@ public class UserPostFragment extends Fragment {
 
     private void StoringImageToFirebaseStorage() {
         Calendar calFordDate = Calendar.getInstance();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat currentDate = new SimpleDateFormat(getString(R.string.date_format));
         saveCurrentDate = currentDate.format(calFordDate.getTime());
 
         Calendar calFordTime = Calendar.getInstance();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat currentTime = new SimpleDateFormat(getString(R.string.time_format));
         saveCurrentTime = currentTime.format(calFordDate.getTime());
 
         postRandomName = saveCurrentDate + saveCurrentTime;
 
 
-        final StorageReference filePath = mPostsImageStorageRef.child("Post Images").child(ImageUri.getLastPathSegment() + postRandomName + ".jpg");
+        final StorageReference filePath = mPostsImageStorageRef.child(getString(R.string.storage_child_post_images)).child(ImageUri.getLastPathSegment() + postRandomName + ".jpg");
 
 
         filePath.putFile(ImageUri)
                 .addOnSuccessListener(taskSnapshot -> {
-                    Toast.makeText(getContext(), "Uploaded", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.uploaded_message, Toast.LENGTH_SHORT).show();
                     filePath.getDownloadUrl().addOnSuccessListener(uri -> {
                         downloadUrl = uri.toString();
 
@@ -139,12 +139,12 @@ public class UserPostFragment extends Fragment {
                 })
                 .addOnFailureListener(e -> {
                     loadingBar.dismiss();
-                    Toast.makeText(getContext(), "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.failed_message) + e.getMessage(), Toast.LENGTH_SHORT).show();
                 })
                 .addOnProgressListener(taskSnapshot -> {
                     double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
                             .getTotalByteCount());
-                    loadingBar.setMessage("Uploaded " + (int) progress + "%");
+                    loadingBar.setMessage(R.string.uploaded_message + (int) progress + "%");
                 });
     }
 
@@ -162,7 +162,7 @@ public class UserPostFragment extends Fragment {
                     String userFullName = Objects.requireNonNull(dataSnapshot.child("full_name").getValue()).toString();
                     String userProfileImage;
 
-                    if(dataSnapshot.child("profileimage").getValue() == null)
+                    if(dataSnapshot.child(getString(R.string.child_profile_image)).getValue() == null)
                     {
 
                         userProfileImage = "none";
@@ -173,22 +173,22 @@ public class UserPostFragment extends Fragment {
                     }
 
                     HashMap postsMap = new HashMap();
-                    postsMap.put("uid", currentUserId);
-                    postsMap.put("date", saveCurrentDate);
-                    postsMap.put("time", saveCurrentTime);
-                    postsMap.put("description", description);
-                    postsMap.put("postimage", downloadUrl);
-                    postsMap.put("profileimage", userProfileImage);
-                    postsMap.put("full_name", userFullName);
+                    postsMap.put(getString(R.string.key_uid), currentUserId);
+                    postsMap.put(getString(R.string.key_date), saveCurrentDate);
+                    postsMap.put(getString(R.string.key_time), saveCurrentTime);
+                    postsMap.put(getString(R.string.key_description), description);
+                    postsMap.put(getString(R.string.key_postimage), downloadUrl);
+                    postsMap.put(getString(R.string.key_profileimage), userProfileImage);
+                    postsMap.put(getString(R.string.key_full_name), userFullName);
 
                     mPostRef.child(currentUserId + postRandomName).updateChildren(postsMap)
                             .addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
                                     selfCallHomeActivity();
-                                    Toast.makeText(getContext(), "New Post is updated successfully.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), R.string.post_update_success_message, Toast.LENGTH_SHORT).show();
                                     loadingBar.dismiss();
                                 } else {
-                                    Toast.makeText(getContext(), "Error Occured while updating your post.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), R.string.post_update_error_message, Toast.LENGTH_SHORT).show();
                                     loadingBar.dismiss();
                                 }
                             });

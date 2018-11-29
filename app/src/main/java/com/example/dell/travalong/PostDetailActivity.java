@@ -41,9 +41,6 @@ public class PostDetailActivity extends AppCompatActivity {
     private boolean like_status = false;
     int likesCount;
 
-
-
-    private RecyclerView profilePostList;
     private FirebaseAuth mAuth;
     private DatabaseReference mPostsRef, mClickPostRef,mLikesRef;
     private String currentUserID;
@@ -55,31 +52,21 @@ public class PostDetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         final String postKey = this.getIntent().getStringExtra("key");
-        mClickPostRef = FirebaseDatabase.getInstance().getReference().child("Posts").child(postKey);
-        mLikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
+        mClickPostRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.child_posts)).child(postKey);
+        mLikesRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.child_likes));
 
         mAuth = FirebaseAuth.getInstance();
         currentUserID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-        mPostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
+        mPostsRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.child_posts));
         mPostsRef.keepSynced(true);
 
         setLikesCount(postKey);
         DisplayUserPost(postKey);
 
-        likePostBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                likeCurrentPost(postKey);
-            }
-        });
+        likePostBtn.setOnClickListener(view -> likeCurrentPost(postKey));
 
 
-        deletePostBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                deleteCurrentPost();
-            }
-        });
+        deletePostBtn.setOnClickListener(view -> deleteCurrentPost());
 
     }
 
@@ -93,12 +80,12 @@ public class PostDetailActivity extends AppCompatActivity {
             {
                 if (dataSnapshot.child(postKey).hasChild(currentUserID)) {
                     likesCount = (int) dataSnapshot.child(postKey).getChildrenCount();
-                    postNoOfLikes.setText(Integer.toString(likesCount) + " Likes");
-                    likePostBtn.setText("Liked!");
+                    postNoOfLikes.setText(Integer.toString(likesCount) + getString(R.string.likes_label));
+                    likePostBtn.setText(getString(R.string.value_liked));
                 } else {
                     likesCount = (int) dataSnapshot.child(postKey).getChildrenCount();
-                    postNoOfLikes.setText(Integer.toString(likesCount) + " Likes");
-                    likePostBtn.setText("Like");
+                    postNoOfLikes.setText(Integer.toString(likesCount) + getString(R.string.likes_label));
+                    likePostBtn.setText(getString(R.string.value_like));
                 }
             }
 
@@ -140,7 +127,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         mClickPostRef.removeValue();
         sendUserToProfileActivity();
-        Toast.makeText(PostDetailActivity.this, "Post Deleted Successfully!",
+        Toast.makeText(PostDetailActivity.this, R.string.post_deleted_message,
                 Toast.LENGTH_SHORT).show();
     }
 
@@ -156,12 +143,12 @@ public class PostDetailActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    String userDisplayName = Objects.requireNonNull(dataSnapshot.child("full_name").getValue()).toString();
-                    String userProfileImage = Objects.requireNonNull(dataSnapshot.child("profileimage").getValue()).toString();
-                    String userPostImage = Objects.requireNonNull(dataSnapshot.child("postimage").getValue()).toString();
-                    String userPostDate = Objects.requireNonNull(dataSnapshot.child("date").getValue()).toString();
-                    String userPostTime = Objects.requireNonNull(dataSnapshot.child("time").getValue()).toString();
-                    String userPostDescription = Objects.requireNonNull(dataSnapshot.child("description").getValue()).toString();
+                    String userDisplayName = Objects.requireNonNull(dataSnapshot.child(getString(R.string.child_full_name)).getValue()).toString();
+                    String userProfileImage = Objects.requireNonNull(dataSnapshot.child(getString(R.string.child_profile_image)).getValue()).toString();
+                    String userPostImage = Objects.requireNonNull(dataSnapshot.child(getString(R.string.child_post_image)).getValue()).toString();
+                    String userPostDate = Objects.requireNonNull(dataSnapshot.child(getString(R.string.child_date)).getValue()).toString();
+                    String userPostTime = Objects.requireNonNull(dataSnapshot.child(getString(R.string.child_time)).getValue()).toString();
+                    String userPostDescription = Objects.requireNonNull(dataSnapshot.child(getString(R.string.child_description)).getValue()).toString();
 
                     postUsername.setText(userDisplayName);
                     if(userProfileImage.equals("none"))
@@ -184,5 +171,11 @@ public class PostDetailActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.go_down,R.anim.go_up);
     }
 }

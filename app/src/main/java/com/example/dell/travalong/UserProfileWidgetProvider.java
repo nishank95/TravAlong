@@ -55,7 +55,6 @@ public class UserProfileWidgetProvider extends AppWidgetProvider {
 
         Intent showIngredientIntent = new Intent(context,UserProfileActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context,0,showIngredientIntent,0);
-        Log.d("Widget:","In OnReceive");
         views.setOnClickPendingIntent(R.id.show_user_profile,pendingIntent);
 
 

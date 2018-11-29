@@ -54,7 +54,7 @@ public class UserProfileActivity extends AppCompatActivity {
     @BindView(R.id.profile_user_photo) CircleImageView profileImage;
 
     private String receiverID, senderID, currentUserId, saveCurrentDate;
-    private String CURRENT_STATE = "not_friends";
+    private String CURRENT_STATE;
     int postCount, likesCount, followCount;
     private boolean CURRENT_USER_PROFILE = true;
 
@@ -91,14 +91,15 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
         ButterKnife.bind(this);
+        CURRENT_STATE = getString(R.string.not_friends_label);
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        mPostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
-        mFollowReqRef = FirebaseDatabase.getInstance().getReference().child("Follow-Requests");
-        mFollowsRef = FirebaseDatabase.getInstance().getReference().child("Followers");
-        mLikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
+        mUserRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.child_users));
+        mPostsRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.child_posts));
+        mFollowReqRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.child_follow_req));
+        mFollowsRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.child_followers));
+        mLikesRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.child_likes));
 
         mAuth = FirebaseAuth.getInstance();
         currentUserId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
@@ -115,16 +116,16 @@ public class UserProfileActivity extends AppCompatActivity {
                 profileFollowBtn.setVisibility(View.VISIBLE);
                 profileFollowBtn.setOnClickListener(view -> {
                     profileFollowBtn.setEnabled(false);
-                    if (CURRENT_STATE.equals("not_friends")) {
+                    if (CURRENT_STATE.equals(getString(R.string.not_friends_label))) {
                         sendFriendRequestToPerson();
                     }
-                    if (CURRENT_STATE.equals("request_sent")) {
+                    if (CURRENT_STATE.equals(getString(R.string.request_sent_label))) {
                         cancelFriendRequest();
                     }
-                    if (CURRENT_STATE.equals("request_received")) {
+                    if (CURRENT_STATE.equals(getString(R.string.request_received_label))) {
                         acceptFollowRequest();
                     }
-                    if (CURRENT_STATE.equals("friends")) {
+                    if (CURRENT_STATE.equals(getString(R.string.friends_label))) {
                         unFollowExistingFriend();
                     }
                 });
@@ -134,7 +135,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
         loadProfileDetails();
         loadFragments();
-
         editor.apply();
 
     }
@@ -184,8 +184,8 @@ public class UserProfileActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
                                                 profileFollowBtn.setEnabled(true);
-                                                CURRENT_STATE = "not_friends";
-                                                profileFollowBtn.setText("Follow +");
+                                                CURRENT_STATE = getString(R.string.not_friends_label);
+                                                profileFollowBtn.setText(R.string.follow_btn_label);
                                                 profileFollowBtn.setBackgroundResource(R.drawable.button_rounded_blue);
                                                 profileFollowBtn.setTextColor(getColor(R.color.white));
                                             }
@@ -198,7 +198,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private void acceptFollowRequest() {
         Calendar calFordDate = Calendar.getInstance();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat currentDate = new SimpleDateFormat(getString(R.string.date_format));
         saveCurrentDate = currentDate.format(calFordDate.getTime());
 
         mFollowsRef.child(senderID).child(receiverID).child("date").setValue(saveCurrentDate)
@@ -226,8 +226,8 @@ public class UserProfileActivity extends AppCompatActivity {
                                                                                 public void onComplete(@NonNull Task<Void> task) {
                                                                                     if (task.isSuccessful()) {
                                                                                         profileFollowBtn.setEnabled(true);
-                                                                                        CURRENT_STATE = "friends";
-                                                                                        profileFollowBtn.setText("UNFOLLOW");
+                                                                                        CURRENT_STATE = getString(R.string.friends_label);
+                                                                                        profileFollowBtn.setText(R.string.unfollow_btn_label);
                                                                                         profileFollowBtn.setBackgroundResource(R.drawable.button_rounded_border_blue);
                                                                                         profileFollowBtn.setTextColor(getColor(R.color.colorPrimaryDark));
                                                                                     }
@@ -261,8 +261,8 @@ public class UserProfileActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
                                                 profileFollowBtn.setEnabled(true);
-                                                CURRENT_STATE = "not_friends";
-                                                profileFollowBtn.setText("Follow +");
+                                                CURRENT_STATE = getString(R.string.not_friends_label);
+                                                profileFollowBtn.setText(getString(R.string.follow_btn_label));
                                                 profileFollowBtn.setBackgroundResource(R.drawable.button_rounded_blue);
                                                 profileFollowBtn.setTextColor(getColor(R.color.white));
                                             }
@@ -276,29 +276,22 @@ public class UserProfileActivity extends AppCompatActivity {
     private void sendFriendRequestToPerson() {
 
         mFollowReqRef.child(senderID).child(receiverID)
-                .child("request_type").setValue("sent")
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            mFollowReqRef.child(receiverID).child(senderID)
-                                    .child("request_type").setValue("received")
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-
-                                        @RequiresApi(api = Build.VERSION_CODES.M)
-                                        @SuppressLint({"SetTextI18n", "ResourceAsColor"})
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                profileFollowBtn.setEnabled(true);
-                                                CURRENT_STATE = "request_sent";
-                                                profileFollowBtn.setText("Cancel Request");
-                                                profileFollowBtn.setBackgroundResource(R.drawable.button_rounded_border_blue);
-                                                profileFollowBtn.setTextColor(getColor(R.color.colorPrimaryDark));
-                                            }
+                .child(getString(R.string.request_type_label)).setValue(getString(R.string.sent_label))
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        mFollowReqRef.child(receiverID).child(senderID)
+                                .child(getString(R.string.request_type_label)).setValue(getString(R.string.received_label))
+                                .addOnCompleteListener(task1 -> {
+                                    if (task1.isSuccessful()) {
+                                        profileFollowBtn.setEnabled(true);
+                                        CURRENT_STATE = getString(R.string.request_sent_label);
+                                        profileFollowBtn.setText(R.string.cancel_request_btn_label);
+                                        profileFollowBtn.setBackgroundResource(R.drawable.button_rounded_border_blue);
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                            profileFollowBtn.setTextColor(getColor(R.color.colorPrimaryDark));
                                         }
-                                    });
-                        }
+                                    }
+                                });
                     }
                 });
     }
@@ -318,10 +311,10 @@ public class UserProfileActivity extends AppCompatActivity {
                     String userName = Objects.requireNonNull(dataSnapshot.child("username").getValue()).toString();
                     String userStatus = Objects.requireNonNull(dataSnapshot.child("status").getValue()).toString();
                     String userProfileImage = null;
-                    if (dataSnapshot.child("profileimage").getValue() == null) {
+                    if (dataSnapshot.child(getString(R.string.child_profile_image)).getValue() == null) {
                         Picasso.get().load(R.drawable.male_profile).into(profileImage);
                     } else {
-                        userProfileImage = Objects.requireNonNull(dataSnapshot.child("profileimage").getValue()).toString();
+                        userProfileImage = Objects.requireNonNull(dataSnapshot.child(getString(R.string.child_profile_image)).getValue()).toString();
                         Picasso.get().load(userProfileImage).placeholder(R.drawable.male_profile).into(profileImage);
                     }
                     profileDisplayName.setText(userDisplayName);
@@ -360,18 +353,14 @@ public class UserProfileActivity extends AppCompatActivity {
                 if (dataSnapshot.exists()) {
                     followCount = (int) dataSnapshot.getChildrenCount();
                     profileNoOfFollowers.setText(String.valueOf(followCount));
-                    Log.d("Followers", Integer.toString(followCount));
                     if(followCount != 0)
                     {
                         setFollowersCountVariable(followCount);
-                        Log.d("Followers", Integer.toString(followCount));
-
                     }
                 }
                 else {
                     followCount = 0;
                     profileNoOfFollowers.setText(String.valueOf(followCount));
-                    Log.d("Followers", Integer.toString(followCount));
                 }
 
             }
@@ -402,10 +391,6 @@ public class UserProfileActivity extends AppCompatActivity {
                             likesCount += snap.getChildrenCount();
                         }
                     }
-                    else
-                        {
-                        Log.d("Likes", "0 Likes");
-                        }
                 }
                 profileNoOfLikes.setText(Integer.toString(likesCount));
                 setLikesCountVariable(likesCount);
@@ -427,17 +412,17 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChild(receiverID)) {
-                    String request_type = Objects.requireNonNull(dataSnapshot.child(receiverID).child("request_type").getValue()).toString();
-                    if (request_type.equals("sent")) {
+                    String request_type = Objects.requireNonNull(dataSnapshot.child(receiverID).child(getString(R.string.request_type_label)).getValue()).toString();
+                    if (request_type.equals(getString(R.string.sent_label))) {
                         profileFollowBtn.setEnabled(true);
-                        CURRENT_STATE = "request_sent";
-                        profileFollowBtn.setText("Cancel Request");
+                        CURRENT_STATE = getString(R.string.request_sent_label);
+                        profileFollowBtn.setText(getString(R.string.cancel_request_btn_label));
                         profileFollowBtn.setBackgroundResource(R.drawable.button_rounded_border_blue);
                         profileFollowBtn.setTextColor(getColor(R.color.colorPrimaryDark));
                     }
-                    else if (request_type.equals("received")) {
-                        CURRENT_STATE = "request_received";
-                        profileFollowBtn.setText("ACCEPT REQUEST");
+                    else if (request_type.equals(getString(R.string.received_label))) {
+                        CURRENT_STATE = getString(R.string.request_received_label);
+                        profileFollowBtn.setText(R.string.accept_request_btn_label);
                     }
                 }
                 else {
@@ -445,8 +430,8 @@ public class UserProfileActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.hasChild(receiverID)) {
-                                CURRENT_STATE = "friends";
-                                profileFollowBtn.setText("UNFOLLOW");
+                                CURRENT_STATE = getString(R.string.friends_label);
+                                profileFollowBtn.setText(getString(R.string.unfollow_btn_label));
                             }
                         }
 
