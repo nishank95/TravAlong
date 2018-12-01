@@ -67,7 +67,8 @@ public class FeedListFragment extends Fragment {
         return rootView;
     }
 
-    private void displayAllUsersPosts() {
+    private void displayAllUsersPosts()
+    {
         FirebaseRecyclerAdapter<Post, PostViewHolder> firebaseRecyclerAdapter =
                 new FirebaseRecyclerAdapter<Post, PostViewHolder>
                         (

@@ -3,6 +3,7 @@ package com.example.dell.travalong;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -307,31 +308,7 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    String userDisplayName = Objects.requireNonNull(dataSnapshot.child("full_name").getValue()).toString();
-                    String userName = Objects.requireNonNull(dataSnapshot.child("username").getValue()).toString();
-                    String userStatus = Objects.requireNonNull(dataSnapshot.child("status").getValue()).toString();
-                    String userProfileImage = null;
-                    if (dataSnapshot.child(getString(R.string.child_profile_image)).getValue() == null) {
-                        Picasso.get().load(R.drawable.male_profile).into(profileImage);
-                    } else {
-                        userProfileImage = Objects.requireNonNull(dataSnapshot.child(getString(R.string.child_profile_image)).getValue()).toString();
-                        Picasso.get().load(userProfileImage).placeholder(R.drawable.male_profile).into(profileImage);
-                    }
-                    profileDisplayName.setText(userDisplayName);
-                    profileUserName.setText("(@" + userName + ")");
-                    profileStatus.setText(userStatus);
-                    setPostCount();
-                    setLikesCount();
-                    setFollowersCount();
-
-                    editor.putString("USER_NAME",userDisplayName);
-                    editor.putString("USER_PROFILE_IMAGE",userProfileImage);
-
-
-                    if (!CURRENT_USER_PROFILE)
-                    {
-                        maintainRequestBtnSession();
-                    }
+                   new LoadProfileTask().execute(dataSnapshot);
                 }
             }
 
@@ -340,6 +317,61 @@ public class UserProfileActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class LoadProfileTask extends AsyncTask<DataSnapshot, Void, String> {
+
+        String userDisplayName, userName, userStatus, userProfileImage;
+
+        @Override
+        protected String doInBackground(DataSnapshot... params) {
+
+            userDisplayName = Objects.requireNonNull(params[0].child("full_name").getValue()).toString();
+                    userName = Objects.requireNonNull(params[0].child("username").getValue()).toString();
+                    userStatus = Objects.requireNonNull(params[0].child("status").getValue()).toString();
+                    userProfileImage = null;
+
+                    if (params[0].child(getString(R.string.child_profile_image)).getValue() == null)
+                    {
+                        Picasso.get().load(R.drawable.male_profile).into(profileImage);
+                    }
+                    else {
+                        userProfileImage = Objects.requireNonNull(params[0].child(getString(R.string.child_profile_image)).getValue()).toString();
+                    }
+
+
+
+                    if (!CURRENT_USER_PROFILE)
+                    {
+                        maintainRequestBtnSession();
+                    }
+
+            return "Executed";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            profileDisplayName.setText(userDisplayName);
+            profileUserName.setText("(@" + userName + ")");
+            profileStatus.setText(userStatus);
+            Picasso.get().load(userProfileImage).placeholder(R.drawable.male_profile).into(profileImage);
+
+            editor.putString("USER_NAME",userDisplayName);
+            editor.putString("USER_PROFILE_IMAGE",userProfileImage);
+
+            setPostCount();
+            setLikesCount();
+            setFollowersCount();
+            Toast.makeText(getBaseContext(), "Post execute", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
     }
 
     private void setFollowersCount() {
