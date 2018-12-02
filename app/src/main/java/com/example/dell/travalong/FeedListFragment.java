@@ -137,7 +137,7 @@ public class FeedListFragment extends Fragment {
 
     private void callProfileActivity(String uid) {
         Intent callProfileAct = new Intent(getContext(),UserProfileActivity.class);
-        callProfileAct.putExtra("receiver_id",uid);
+        callProfileAct.putExtra(getString(R.string.receiver_id_key),uid);
         startActivity(callProfileAct);
     }
 

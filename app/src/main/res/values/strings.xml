@@ -28,7 +28,7 @@
     <string name="post_time">HH:MM PM</string>
     <string name="post_date">DD/MM/YY</string>
     <string name="post_image_cd">Post Image</string>
-    <string name="post_description">Post description...</string>
+    <string name="post_description">Post description…</string>
     <string name="view_profile_btn_text">View Profile</string>
     <string name="post_likes_count_text">0 Likes</string>
     <string name="enter_password_label">Enter Password:</string>
@@ -43,7 +43,7 @@
     <string name="post_detail_date">DD/MM/YY</string>
     <string name="post_detail_like_count">0 Likes</string>
     <string name="post_detail_image_cd">Display Image</string>
-    <string name="post_detail_description">Post description...</string>
+    <string name="post_detail_description">Post description…</string>
     <string name="like_btn_text">Like</string>
     <string name="delete_post_btn_text">Delete Post</string>
     <string name="profile_post_image_cd">Profile Post Image</string>
@@ -142,7 +142,6 @@
     <string name="time_format">HH:mm</string>
     <string name="storage_child_post_images">Post Images</string>
     <string name="uploaded_message">Uploaded</string>
-    <string name="failed_message">Failed</string>
     <string name="key_uid">uid</string>
     <string name="key_date">date</string>
     <string name="key_time">time</string>
@@ -158,8 +157,21 @@
     <string name="cancel_request_btn_label">Cancel Request</string>
     <string name="request_type_label">request_type</string>
     <string name="sent_label">sent</string>
-
     <string name="received_label">received</string>
     <string name="accept_request_btn_label">ACCEPT REQUEST</string>
+    <string name="child_username">username</string>
+    <string name="child_status">status</string>
+    <string name="post_execute_message">Post execute</string>
+    <string name="receiver_id_key">receiver_id</string>
+    <string name="execute_message">Executed</string>
+    <string name="child_uid">uid</string>
+    <string name="failed_message">Failed</string>
+    <string name="none_label">none</string>
+    <string name="profile_act_pref_key">USER_PROFILE_PREF</string>
+    <string name="user_name_pref_key">USER_NAME</string>
+    <string name="profile_image_pref_key">USER_PROFILE_IMAGE</string>
+    <string name="profile_followers_count_pref_key">USER_PROFILE_FOLLOWERS_COUNT</string>
+    <string name="profile_post_count_pref_key">USER_PROFILE_POST_COUNT</string>
+    <string name="profile_likes_count_pref_key">USER_PROFILE_LIKES_COUNT</string>
 
 </resources>

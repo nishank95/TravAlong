@@ -57,13 +57,13 @@ public class UserProfileWidgetProvider extends AppWidgetProvider {
         PendingIntent pendingIntent = PendingIntent.getActivity(context,0,showIngredientIntent,0);
         views.setOnClickPendingIntent(R.id.show_user_profile,pendingIntent);
 
-
-        SharedPreferences sharedPreferences = context.getSharedPreferences("USER_PROFILE_PREF",Context.MODE_PRIVATE);
-        String widgetUserName = sharedPreferences.getString("USER_NAME","");
-        String widgetProfileImage = sharedPreferences.getString("USER_PROFILE_IMAGE","");
-        String widgetFollowerCount = sharedPreferences.getString("USER_PROFILE_FOLLOWERS_COUNT","");
-        String widgetPostsCount = sharedPreferences.getString("USER_PROFILE_POST_COUNT","");
-        String widgetLikesCount = sharedPreferences.getString("USER_PROFILE_LIKES_COUNT","");
+        
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.profile_act_pref_key),Context.MODE_PRIVATE);
+        String widgetUserName = sharedPreferences.getString(context.getString(R.string.user_name_pref_key),"");
+        String widgetProfileImage = sharedPreferences.getString(context.getString(R.string.profile_image_pref_key),"");
+        String widgetFollowerCount = sharedPreferences.getString(context.getString(R.string.profile_followers_count_pref_key),"");
+        String widgetPostsCount = sharedPreferences.getString(context.getString(R.string.profile_post_count_pref_key),"");
+        String widgetLikesCount = sharedPreferences.getString(context.getString(R.string.profile_likes_count_pref_key),"");
 
         views.setTextViewText(R.id.widget_user_name, widgetUserName);
         Picasso.get().load(widgetProfileImage).into(views,R.id.widget_user_profile_backpath,new int[] {});

@@ -123,56 +123,40 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 progressDialog.show();
 
                 mStorageRef.putFile(imageUri)
-                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                progressDialog.dismiss();
-                                Toast.makeText(UpdateProfileActivity.this, R.string.uploaded_message, Toast.LENGTH_SHORT).show();
+                        .addOnSuccessListener(taskSnapshot -> {
+                            progressDialog.dismiss();
+                            Toast.makeText(UpdateProfileActivity.this, R.string.uploaded_message, Toast.LENGTH_SHORT).show();
 
-                                mStorageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        String downloadUrl = uri.toString();
-                                        Log.d("TAG", downloadUrl);
+                            mStorageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                                String downloadUrl = uri.toString();
+                                Log.d("TAG", downloadUrl);
 
-                                        mUserRef.child(getString(R.string.child_profile_image)).setValue(downloadUrl)
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task)
-                                                    {
-                                                        if(task.isSuccessful()) {
-                                                            Intent selfIntent = new Intent(UpdateProfileActivity.this, UpdateProfileActivity.class);
-                                                            startActivity(selfIntent);
+                                mUserRef.child(getString(R.string.child_profile_image)).setValue(downloadUrl)
+                                        .addOnCompleteListener(task -> {
+                                            if(task.isSuccessful()) {
+                                                Intent selfIntent = new Intent(UpdateProfileActivity.this, UpdateProfileActivity.class);
+                                                startActivity(selfIntent);
 
-                                                            Toast.makeText(UpdateProfileActivity.this, R.string.image_stored_success_message, Toast.LENGTH_SHORT).show();
-                                                        }
-                                                        else
-                                                        {
-                                                            String message = task.getException().getMessage();
-                                                            Toast.makeText(UpdateProfileActivity.this, getString(R.string.image_store_error) + message, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(UpdateProfileActivity.this, R.string.image_stored_success_message, Toast.LENGTH_SHORT).show();
+                                            }
+                                            else
+                                            {
+                                                String message = task.getException().getMessage();
+                                                Toast.makeText(UpdateProfileActivity.this, getString(R.string.image_store_error) + message, Toast.LENGTH_SHORT).show();
 
-                                                        }
-                                                    }
-                                                });
-                                    }
-                                    });
+                                            }
+                                        });
+                            });
 
-                            }
                         })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                progressDialog.dismiss();
-                                Toast.makeText(UpdateProfileActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
+                        .addOnFailureListener(e -> {
+                            progressDialog.dismiss();
+                            Toast.makeText(UpdateProfileActivity.this, getString(R.string.failed_message) + e.getMessage(), Toast.LENGTH_SHORT).show();
                         })
-                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
-                                        .getTotalByteCount());
-                                progressDialog.setMessage("Uploaded "+(int)progress + "%");
-                            }
+                        .addOnProgressListener(taskSnapshot -> {
+                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                                    .getTotalByteCount());
+                            progressDialog.setMessage(R.string.uploaded_message +(int)progress + "%");
                         });
             }
     }
@@ -210,23 +194,18 @@ public class UpdateProfileActivity extends AppCompatActivity {
             userData.put(getString(R.string.key_country), country);
             userData.put(getString(R.string.key_phone), phone);
             userData.put(getString(R.string.key_status), status);
-            userData.put(getString(R.string.key_dob), "none");
-            userData.put(getString(R.string.key_gender), "none");
-            userData.put(getString(R.string.key_relationship_stas), "none");
+            userData.put(getString(R.string.key_dob), getString(R.string.none_label));
+            userData.put(getString(R.string.key_gender), getString(R.string.none_label));
+            userData.put(getString(R.string.key_relationship_stas), getString(R.string.none_label));
 
-            mUserRef.updateChildren(userData).addOnCompleteListener(new OnCompleteListener() {
+            mUserRef.updateChildren(userData).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    callHomeActivity();
+                    Toast.makeText(UpdateProfileActivity.this, R.string.details_stored_success_message, Toast.LENGTH_LONG).show();
 
-                @Override
-                public void onComplete(@NonNull Task task) {
-                    if (task.isSuccessful()) {
-                        callHomeActivity();
-                        Toast.makeText(UpdateProfileActivity.this, R.string.details_stored_success_message, Toast.LENGTH_LONG).show();
-
-                    } else {
-                        String message = Objects.requireNonNull(task.getException()).getMessage();
-                        Toast.makeText(UpdateProfileActivity.this, getString(R.string.details_store_error_message) + message, Toast.LENGTH_SHORT).show();
-                    }
-
+                } else {
+                    String message = Objects.requireNonNull(task.getException()).getMessage();
+                    Toast.makeText(UpdateProfileActivity.this, getString(R.string.details_store_error_message) + message, Toast.LENGTH_SHORT).show();
                 }
 
             });

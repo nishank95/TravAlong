@@ -105,12 +105,12 @@ public class UserProfileActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentUserId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 
-        if (getIntent().hasExtra("receiver_id"))
+        if (getIntent().hasExtra(getString(R.string.receiver_id_key)))
         {
             CURRENT_USER_PROFILE = false;
 
             senderID = currentUserId;
-            receiverID = getIntent().getStringExtra("receiver_id");
+            receiverID = getIntent().getStringExtra(getString(R.string.receiver_id_key));
 
             if (!senderID.equals(receiverID)) {
                 currentUserId = receiverID;
@@ -202,12 +202,12 @@ public class UserProfileActivity extends AppCompatActivity {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat currentDate = new SimpleDateFormat(getString(R.string.date_format));
         saveCurrentDate = currentDate.format(calFordDate.getTime());
 
-        mFollowsRef.child(senderID).child(receiverID).child("date").setValue(saveCurrentDate)
+        mFollowsRef.child(senderID).child(receiverID).child(getString(R.string.child_date)).setValue(saveCurrentDate)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            mFollowsRef.child(receiverID).child(senderID).child("date").setValue(saveCurrentDate)
+                            mFollowsRef.child(receiverID).child(senderID).child(getString(R.string.child_date)).setValue(saveCurrentDate)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
@@ -300,7 +300,7 @@ public class UserProfileActivity extends AppCompatActivity {
     @SuppressLint("CommitPrefEdits")
     private void loadProfileDetails() {
 
-        sharedPreferences = getSharedPreferences("USER_PROFILE_PREF",MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(getString(R.string.profile_act_pref_key),MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
         mUserRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
@@ -327,9 +327,9 @@ public class UserProfileActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(DataSnapshot... params) {
 
-            userDisplayName = Objects.requireNonNull(params[0].child("full_name").getValue()).toString();
-                    userName = Objects.requireNonNull(params[0].child("username").getValue()).toString();
-                    userStatus = Objects.requireNonNull(params[0].child("status").getValue()).toString();
+            userDisplayName = Objects.requireNonNull(params[0].child(getString(R.string.child_full_name)).getValue()).toString();
+                    userName = Objects.requireNonNull(params[0].child(getString(R.string.child_username)).getValue()).toString();
+                    userStatus = Objects.requireNonNull(params[0].child(getString(R.string.child_status)).getValue()).toString();
                     userProfileImage = null;
 
                     if (params[0].child(getString(R.string.child_profile_image)).getValue() == null)
@@ -347,7 +347,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         maintainRequestBtnSession();
                     }
 
-            return "Executed";
+            return getString(R.string.execute_message);
         }
 
         @Override
@@ -357,13 +357,13 @@ public class UserProfileActivity extends AppCompatActivity {
             profileStatus.setText(userStatus);
             Picasso.get().load(userProfileImage).placeholder(R.drawable.male_profile).into(profileImage);
 
-            editor.putString("USER_NAME",userDisplayName);
-            editor.putString("USER_PROFILE_IMAGE",userProfileImage);
+            editor.putString(getString(R.string.user_name_pref_key),userDisplayName);
+            editor.putString(getString(R.string.profile_image_pref_key),userProfileImage);
 
             setPostCount();
             setLikesCount();
             setFollowersCount();
-            Toast.makeText(getBaseContext(), "Post execute", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), R.string.post_execute_message, Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -404,7 +404,6 @@ public class UserProfileActivity extends AppCompatActivity {
         });
 
 
-        Log.d("Inset", Integer.toString(followCount));
     }
 
     private void setLikesCount() {
@@ -484,7 +483,7 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void setPostCount() {
-        Query myPostQuery = mPostsRef.orderByChild("uid").startAt(currentUserId).endAt(currentUserId + "\uf8ff");
+        Query myPostQuery = mPostsRef.orderByChild(getString(R.string.child_uid)).startAt(currentUserId).endAt(currentUserId + "\uf8ff");
         myPostQuery.addValueEventListener(new ValueEventListener() {
 
             @SuppressLint("SetTextI18n")
@@ -520,25 +519,20 @@ public class UserProfileActivity extends AppCompatActivity {
 
     public void setFollowersCountVariable(int followCount) {
         this.followCount = followCount;
-        editor.putString("USER_PROFILE_FOLLOWERS_COUNT",Integer.toString(followCount));
-        Log.d("Check", String.valueOf(followCount));
+        editor.putString(getString(R.string.profile_followers_count_pref_key),Integer.toString(followCount));
         editor.apply();
     }
 
 
     public void setPostCountVariable(int postCount) {
         this.postCount = postCount;
-        editor.putString("USER_PROFILE_POST_COUNT",Integer.toString(postCount));
-        Log.d("Check", String.valueOf(postCount));
+        editor.putString(getString(R.string.profile_post_count_pref_key),Integer.toString(postCount));
         editor.apply();
-
-
     }
 
     public void setLikesCountVariable(int likesCount) {
         this.likesCount = likesCount;
-        editor.putString("USER_PROFILE_LIKES_COUNT",Integer.toString(likesCount));
-        Log.d("Check", String.valueOf(likesCount));
+        editor.putString(getString(R.string.profile_likes_count_pref_key),Integer.toString(likesCount));
         editor.apply();
     }
 }
