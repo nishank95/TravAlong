@@ -171,28 +171,19 @@ public class UserProfileActivity extends AppCompatActivity {
     private void unFollowExistingFriend() {
         mFollowsRef.child(senderID).child(receiverID)
                 .removeValue()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            mFollowsRef.child(receiverID).child(senderID)
-                                    .removeValue()
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-
-                                        @RequiresApi(api = Build.VERSION_CODES.M)
-                                        @SuppressLint({"SetTextI18n", "ResourceAsColor"})
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                profileFollowBtn.setEnabled(true);
-                                                CURRENT_STATE = getString(R.string.not_friends_label);
-                                                profileFollowBtn.setText(R.string.follow_btn_label);
-                                                profileFollowBtn.setBackgroundResource(R.drawable.button_rounded_blue);
-                                                profileFollowBtn.setTextColor(getColor(R.color.white));
-                                            }
-                                        }
-                                    });
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        mFollowsRef.child(receiverID).child(senderID)
+                                .removeValue()
+                                .addOnCompleteListener(task1 -> {
+                                    if (task1.isSuccessful()) {
+                                        profileFollowBtn.setEnabled(true);
+                                        CURRENT_STATE = getString(R.string.not_friends_label);
+                                        profileFollowBtn.setText(R.string.follow_btn_label);
+                                        profileFollowBtn.setBackgroundResource(R.drawable.button_rounded_blue);
+                                        profileFollowBtn.setTextColor(getColor(R.color.white));
+                                    }
+                                });
                     }
                 });
     }
@@ -203,44 +194,30 @@ public class UserProfileActivity extends AppCompatActivity {
         saveCurrentDate = currentDate.format(calFordDate.getTime());
 
         mFollowsRef.child(senderID).child(receiverID).child(getString(R.string.child_date)).setValue(saveCurrentDate)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            mFollowsRef.child(receiverID).child(senderID).child(getString(R.string.child_date)).setValue(saveCurrentDate)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                mFollowReqRef.child(senderID).child(receiverID)
-                                                        .removeValue()
-                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    mFollowReqRef.child(receiverID).child(senderID)
-                                                                            .removeValue()
-                                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                @RequiresApi(api = Build.VERSION_CODES.M)
-                                                                                @SuppressLint({"SetTextI18n", "ResourceAsColor"})
-                                                                                @Override
-                                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                                    if (task.isSuccessful()) {
-                                                                                        profileFollowBtn.setEnabled(true);
-                                                                                        CURRENT_STATE = getString(R.string.friends_label);
-                                                                                        profileFollowBtn.setText(R.string.unfollow_btn_label);
-                                                                                        profileFollowBtn.setBackgroundResource(R.drawable.button_rounded_border_blue);
-                                                                                        profileFollowBtn.setTextColor(getColor(R.color.colorPrimaryDark));
-                                                                                    }
-                                                                                }
-                                                                            });
-                                                                }
-                                                            }
-                                                        });
-                                            }
-                                        }
-                                    });
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        mFollowsRef.child(receiverID).child(senderID).child(getString(R.string.child_date)).setValue(saveCurrentDate)
+                                .addOnCompleteListener(task13 -> {
+                                    if (task13.isSuccessful()) {
+                                        mFollowReqRef.child(senderID).child(receiverID)
+                                                .removeValue()
+                                                .addOnCompleteListener(task12 -> {
+                                                    if (task12.isSuccessful()) {
+                                                        mFollowReqRef.child(receiverID).child(senderID)
+                                                                .removeValue()
+                                                                .addOnCompleteListener(task1 -> {
+                                                                    if (task1.isSuccessful()) {
+                                                                        profileFollowBtn.setEnabled(true);
+                                                                        CURRENT_STATE = getString(R.string.friends_label);
+                                                                        profileFollowBtn.setText(R.string.unfollow_btn_label);
+                                                                        profileFollowBtn.setBackgroundResource(R.drawable.button_rounded_border_blue);
+                                                                        profileFollowBtn.setTextColor(getColor(R.color.colorPrimaryDark));
+                                                                    }
+                                                                });
+                                                    }
+                                                });
+                                    }
+                                });
                     }
                 });
     }
@@ -248,28 +225,19 @@ public class UserProfileActivity extends AppCompatActivity {
     private void cancelFriendRequest() {
         mFollowReqRef.child(senderID).child(receiverID)
                 .removeValue()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            mFollowReqRef.child(receiverID).child(senderID)
-                                    .removeValue()
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-
-                                        @RequiresApi(api = Build.VERSION_CODES.M)
-                                        @SuppressLint({"SetTextI18n", "ResourceAsColor"})
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                profileFollowBtn.setEnabled(true);
-                                                CURRENT_STATE = getString(R.string.not_friends_label);
-                                                profileFollowBtn.setText(getString(R.string.follow_btn_label));
-                                                profileFollowBtn.setBackgroundResource(R.drawable.button_rounded_blue);
-                                                profileFollowBtn.setTextColor(getColor(R.color.white));
-                                            }
-                                        }
-                                    });
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        mFollowReqRef.child(receiverID).child(senderID)
+                                .removeValue()
+                                .addOnCompleteListener(task1 -> {
+                                    if (task1.isSuccessful()) {
+                                        profileFollowBtn.setEnabled(true);
+                                        CURRENT_STATE = getString(R.string.not_friends_label);
+                                        profileFollowBtn.setText(getString(R.string.follow_btn_label));
+                                        profileFollowBtn.setBackgroundResource(R.drawable.button_rounded_blue);
+                                        profileFollowBtn.setTextColor(getColor(R.color.white));
+                                    }
+                                });
                     }
                 });
     }

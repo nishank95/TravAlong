@@ -99,7 +99,7 @@ public class FollowersActivity extends AppCompatActivity {
                 if (dataSnapshot.hasChildren()) {
                     noOfUsers = (int) dataSnapshot.getChildrenCount();
                     String[] arr = new String[noOfUsers];
-                    CURRENT_STATE = new ArrayList<String>(Arrays.asList(arr));
+                    CURRENT_STATE = new ArrayList<>(Arrays.asList(arr));
                     Collections.fill(CURRENT_STATE, getString(R.string.label_not_friends));
                 }
             }

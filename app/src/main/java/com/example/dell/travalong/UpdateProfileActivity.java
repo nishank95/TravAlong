@@ -82,14 +82,11 @@ public class UpdateProfileActivity extends AppCompatActivity {
 
         });
 
-        profilePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent callGallery = new Intent();
-                callGallery.setAction(Intent.ACTION_GET_CONTENT);
-                callGallery.setType("image/*");
-                startActivityForResult(callGallery, gallery_pick_Code);
-            }
+        profilePhoto.setOnClickListener(view -> {
+            Intent callGallery = new Intent();
+            callGallery.setAction(Intent.ACTION_GET_CONTENT);
+            callGallery.setType("image/*");
+            startActivityForResult(callGallery, gallery_pick_Code);
         });
 
         mUserRef.addValueEventListener(new ValueEventListener() {

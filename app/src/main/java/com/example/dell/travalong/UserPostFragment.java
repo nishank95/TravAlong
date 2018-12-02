@@ -83,7 +83,7 @@ public class UserPostFragment extends Fragment {
         mPostsImageStorageRef = FirebaseStorage.getInstance().getReference();
         mUserRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.child_users));
         mPostRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.child_posts));
-        editTextPostDescription.setHint("Hi ," + username + "! How are you feeling today!");
+        editTextPostDescription.setHint(getString(R.string.create_post_hint_1) + username + getString(R.string.create_post_hint_2));
         Picasso.get().load(userProfilePhoto).placeholder(R.drawable.male_profile).into(profilePhoto);
 
         uploadPhotoBtn.setOnClickListener(v -> OpenGallery());
@@ -102,7 +102,7 @@ public class UserPostFragment extends Fragment {
         } else if (TextUtils.isEmpty(description)) {
             Toast.makeText(getContext(), R.string.image_more_info_message, Toast.LENGTH_SHORT).show();
         } else {
-            loadingBar.setTitle("Add New Post");
+            loadingBar.setTitle(getString(R.string.add_new_post_message));
             loadingBar.setMessage(getString(R.string.loading_post_message));
             loadingBar.show();
             loadingBar.setCanceledOnTouchOutside(true);
@@ -159,17 +159,17 @@ public class UserPostFragment extends Fragment {
 
                 if (dataSnapshot.exists())
                 {
-                    String userFullName = Objects.requireNonNull(dataSnapshot.child("full_name").getValue()).toString();
+                    String userFullName = Objects.requireNonNull(dataSnapshot.child(getString(R.string.child_full_name)).getValue()).toString();
                     String userProfileImage;
 
                     if(dataSnapshot.child(getString(R.string.child_profile_image)).getValue() == null)
                     {
 
-                        userProfileImage = "none";
+                        userProfileImage = getString(R.string.none_label);
                     }
                     else
                     {
-                        userProfileImage = Objects.requireNonNull(dataSnapshot.child("profileimage").getValue()).toString();
+                        userProfileImage = Objects.requireNonNull(dataSnapshot.child(getString(R.string.child_profile_image)).getValue()).toString();
                     }
 
                     HashMap postsMap = new HashMap();

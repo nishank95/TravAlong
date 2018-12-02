@@ -92,41 +92,33 @@ public class FeedListFragment extends Fragment {
                         viewHolder.setLikesCount(postKey);
 
 
-                        viewHolder.postLikeBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                like_status = true;
-                                mLikesRef.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        if (like_status) {
-                                            if (postKey != null) {
-                                                if (dataSnapshot.child(postKey).hasChild(currentUserID)) {
-                                                    mLikesRef.child(postKey).child(currentUserID).removeValue();
-                                                    like_status = false;
-                                                } else {
-                                                    mLikesRef.child(postKey).child(currentUserID).setValue(true);
-                                                    like_status = false;
-                                                }
+                        viewHolder.postLikeBtn.setOnClickListener(view -> {
+                            like_status = true;
+                            mLikesRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (like_status) {
+                                        if (postKey != null) {
+                                            if (dataSnapshot.child(postKey).hasChild(currentUserID)) {
+                                                mLikesRef.child(postKey).child(currentUserID).removeValue();
+                                                like_status = false;
+                                            } else {
+                                                mLikesRef.child(postKey).child(currentUserID).setValue(true);
+                                                like_status = false;
                                             }
                                         }
                                     }
+                                }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                    }
-                                });
-                            }
+                                }
+                            });
                         });
 
 
-                        viewHolder.profileViewBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                callProfileActivity(model.getUid());
-                            }
-                        });
+                        viewHolder.profileViewBtn.setOnClickListener(view -> callProfileActivity(model.getUid()));
 
 
 

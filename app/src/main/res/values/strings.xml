@@ -173,5 +173,8 @@
     <string name="profile_followers_count_pref_key">USER_PROFILE_FOLLOWERS_COUNT</string>
     <string name="profile_post_count_pref_key">USER_PROFILE_POST_COUNT</string>
     <string name="profile_likes_count_pref_key">USER_PROFILE_LIKES_COUNT</string>
+    <string name="create_post_hint_1">Hi ,</string>
+    <string name="create_post_hint_2">! How are you feeling today!</string>
+    <string name="add_new_post_message">Add New Post</string>
 
 </resources>

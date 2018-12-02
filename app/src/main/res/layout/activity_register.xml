@@ -10,7 +10,8 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            tools:ignore="UselessParent">
 
 
             <ImageView
@@ -22,7 +23,8 @@
                 android:filterTouchesWhenObscured="false"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/bg" />
+                app:srcCompat="@drawable/bg"
+                android:contentDescription="@null" />
 
             <View
                 android:id="@+id/viewBg"

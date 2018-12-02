@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -68,15 +69,15 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkInput(String email,String password,String confirmPassword){
+    private boolean checkInput(String email,String password,String confirmPassword)
+    {
 
-        if(email.isEmpty())
-        {
+        if(TextUtils.isEmpty(email)){
             editTextEmail.setError(getString(R.string.email_required_message));
             editTextEmail.requestFocus();
             return false;
         }
-        if(password.isEmpty())
+        if(TextUtils.isEmpty(password))
         {
             editTextPassword.setError(getString(R.string.pass_required_message));
             editTextPassword.requestFocus();
@@ -101,7 +102,6 @@ public class RegisterActivity extends AppCompatActivity {
             editTextPassword.requestFocus();
             return false;
         }
-
         return true;
     }
 
